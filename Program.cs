@@ -16,7 +16,7 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 builder.Services.AddDbContext<DatabaseContext>(options => 
 {
-    options.UseInMemoryDatabase("default");
+    options.UseSqlite("Data Source=data.sqlite");
 });
 
 builder.Services.AddScoped<INoteService, NoteService>();

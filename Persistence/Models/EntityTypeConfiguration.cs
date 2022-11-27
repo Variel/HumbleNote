@@ -3,11 +3,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HumbleNote.Persistence.Models;
 
-public class EntityTypeConfiguration : IEntityTypeConfiguration<Note>,
+public class EntityTypeConfiguration : IEntityTypeConfiguration<User>,
+                                       IEntityTypeConfiguration<Note>,
                                        IEntityTypeConfiguration<HashTag>,
                                        IEntityTypeConfiguration<NoteMention>,
                                        IEntityTypeConfiguration<HashTagIndex>
 {
+
+    void IEntityTypeConfiguration<User>.Configure(EntityTypeBuilder<User> builder)
+    {
+        builder.HasData(new User
+        {
+            Name = "예차니",
+            UserName = "yechanism"
+        });
+    }
+
     void IEntityTypeConfiguration<Note>.Configure(EntityTypeBuilder<Note> builder)
     {
         builder.HasOne(n1 => n1.RootNote)
@@ -22,7 +33,8 @@ public class EntityTypeConfiguration : IEntityTypeConfiguration<Note>,
 
         builder.HasOne(n1 => n1.OldVersionNote)
             .WithOne(n2 => n2.NewVersionNote)
-            .HasForeignKey<Note>(n1 => n1.OldVersionNoteId);
+            .HasForeignKey<Note>(n1 => n1.OldVersionNoteId)
+            .HasPrincipalKey<Note>(n2 => n2.NewVersionNoteId);
 
         builder.HasIndex(n => new { n.UserId, n.Id })
             .IsDescending()

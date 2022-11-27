@@ -3,6 +3,7 @@ using HumbleNote.Domain.Extensions;
 using HumbleNote.Domain.Models.Commands;
 using HumbleNote.Domain.Models.Events;
 using HumbleNote.Domain.Models.Results;
+using HumbleNote.Persistence.Models;
 using HumbleNote.Services;
 using MediatR;
 

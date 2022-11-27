@@ -24,7 +24,7 @@ public class Note
     public Note? RootNote { get; set; }
 
 
-    // 하위 노트일 경우 부모 노트에 대한 참
+    // 하위 노트일 경우 부모 노트에 대한 참조
     [MaxLength(UlidHelper.StringLength)]
     public string? ParentNoteId { get; set; }
     public Note? ParentNote { get; set; }
@@ -32,7 +32,10 @@ public class Note
     public ICollection<Note> ChildrenNotes { get; set; } = new HashSet<Note>();
 
 
-    // 수정이 있었을 경우 새로 바뀐 노트에 대
+    // 수정이 있었을 경우 새로 바뀐 노트에 대한 참조
+
+    [MaxLength(UlidHelper.StringLength)]
+    public string? NewVersionNoteId { get; set; }
     public Note? NewVersionNote { get; set; }
 
     [MaxLength(UlidHelper.StringLength)]

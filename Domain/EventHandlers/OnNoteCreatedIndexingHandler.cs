@@ -30,6 +30,8 @@ public class OnNoteCreatedIndexingHandler : INotificationHandler<NoteCreatedEven
 
         await HandleHashTags(createdNote, cancellationToken);
         await HandleMentions(createdNote, cancellationToken);
+
+        await _database.SaveChangesAsync(cancellationToken);
     }
 
     private async Task HandleHashTags(Note createdNote, CancellationToken cancellationToken)
@@ -68,7 +70,7 @@ public class OnNoteCreatedIndexingHandler : INotificationHandler<NoteCreatedEven
     private async Task HandleMentions(Note createdNote, CancellationToken cancellationToken)
     {
         var matches = Regex.Matches(createdNote.Content, @"@(?<mention>[a-zA-Z0-9]{26})(?>\s|$)");
-        var mentionedIds = matches.Select(m => m.Groups["mention"].Value.ToLower())
+        var mentionedIds = matches.Select(m => m.Groups["mention"].Value.ToUpper())
                                   .Distinct()
                                   .ToArray();
 
