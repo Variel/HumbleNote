@@ -6,6 +6,7 @@ using HumbleNote.Domain.Models.Results;
 using HumbleNote.Persistence.Models;
 using HumbleNote.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace HumbleNote.Domain;
 
@@ -40,7 +41,7 @@ public class NoteService : INoteService
             await transaction.RollbackAsync(cancellationToken);
             return new CreateNoteResult(CreateNoteStatus.ParentNotFound);
         }
-        catch (NoteRivisionException)
+        catch (NoteRevisionException)
         {
             await transaction.RollbackAsync(cancellationToken);
             return new CreateNoteResult(CreateNoteStatus.OldVersionNotFound);
@@ -48,5 +49,26 @@ public class NoteService : INoteService
 
         await transaction.CommitAsync(cancellationToken);
         return new CreateNoteResult(CreateNoteStatus.Succeeded, note);
+    }
+
+    public async Task<ListNoteResult> ListNoteAsync(string userId, string? cursor = null,
+                                                    CancellationToken cancellationToken = default)
+    {
+        IQueryable<Note> filterQuery = _database.Notes.OrderByDescending(n => n.Id);
+
+        if (cursor == null)
+        {
+            filterQuery = filterQuery.Where(n => n.UserId == userId);
+        }
+        else
+        {
+            filterQuery = filterQuery.OrderByDescending(n => n.Id)
+                                     .Where(n => n.UserId == userId
+                                              && n.Id.CompareTo(cursor) < 0);
+        }
+
+        var notes = await filterQuery.Take(10).ToArrayAsync();
+
+        return new ListNoteResult(ListNoteStatus.Succeeded, notes);
     }
 }

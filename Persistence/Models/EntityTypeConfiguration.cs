@@ -31,10 +31,11 @@ public class EntityTypeConfiguration : IEntityTypeConfiguration<User>,
             .HasForeignKey(n1 => n1.ParentNoteId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(n1 => n1.OldVersionNote)
-            .WithOne(n2 => n2.NewVersionNote)
-            .HasForeignKey<Note>(n1 => n1.OldVersionNoteId)
-            .HasPrincipalKey<Note>(n2 => n2.NewVersionNoteId);
+        builder.HasOne(n1 => n1.NewVersionNote)
+            .WithOne(n2 => n2.OldVersionNote)
+            .HasForeignKey<Note>(n1 => n1.NewVersionNoteId);
+
+        builder.HasIndex(n => n.OldVersionNoteId);
 
         builder.HasIndex(n => new { n.UserId, n.Id })
             .IsDescending()

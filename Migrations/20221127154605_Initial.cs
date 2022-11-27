@@ -47,7 +47,7 @@ namespace HumbleNote.Migrations
                     Content = table.Column<string>(type: "TEXT", nullable: false),
                     RootNoteId = table.Column<string>(type: "TEXT", maxLength: 26, nullable: true),
                     ParentNoteId = table.Column<string>(type: "TEXT", maxLength: 26, nullable: true),
-                    NewVersionNoteId = table.Column<string>(type: "TEXT", maxLength: 26, nullable: false),
+                    NewVersionNoteId = table.Column<string>(type: "TEXT", maxLength: 26, nullable: true),
                     OldVersionNoteId = table.Column<string>(type: "TEXT", maxLength: 26, nullable: true),
                     Timestamp = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     LastActivatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
@@ -55,12 +55,11 @@ namespace HumbleNote.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
-                    table.UniqueConstraint("AK_Notes_NewVersionNoteId", x => x.NewVersionNoteId);
                     table.ForeignKey(
-                        name: "FK_Notes_Notes_OldVersionNoteId",
-                        column: x => x.OldVersionNoteId,
+                        name: "FK_Notes_Notes_NewVersionNoteId",
+                        column: x => x.NewVersionNoteId,
                         principalTable: "Notes",
-                        principalColumn: "NewVersionNoteId");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Notes_Notes_ParentNoteId",
                         column: x => x.ParentNoteId,
@@ -128,7 +127,7 @@ namespace HumbleNote.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Name", "UserName" },
-                values: new object[] { "01GJW6GWN7C203G5XFZTWK257Z", "예차니", "yechanism" });
+                values: new object[] { "01GJWW8R1CMPB4E1N1M6CN5QWV", "예차니", "yechanism" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_HashTagIndices_NoteId",
@@ -153,10 +152,15 @@ namespace HumbleNote.Migrations
                 column: "MentionedNoteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notes_NewVersionNoteId",
+                table: "Notes",
+                column: "NewVersionNoteId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notes_OldVersionNoteId",
                 table: "Notes",
-                column: "OldVersionNoteId",
-                unique: true);
+                column: "OldVersionNoteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_ParentNoteId",

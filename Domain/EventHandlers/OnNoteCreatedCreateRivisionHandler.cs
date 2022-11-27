@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HumbleNote.Domain.EventHandlers;
 
-public class OnNoteCreatedCreateRivisionHandler : INotificationHandler<NoteCreatedEvent>
+public class OnNoteCreatedCreateRevisionHandler : INotificationHandler<NoteCreatedEvent>
 {
     private readonly DatabaseContext _database;
 
-    public OnNoteCreatedCreateRivisionHandler(DatabaseContext database)
+    public OnNoteCreatedCreateRevisionHandler(DatabaseContext database)
     {
         _database = database;
     }
@@ -38,12 +38,13 @@ public class OnNoteCreatedCreateRivisionHandler : INotificationHandler<NoteCreat
             throw new NoteHierarchyException("이전 버전 노트가 존재하지 않습니다");
         }
 
-        createdNote.RootNoteId = oldVersionNote.RootNoteId;
         createdNote.OldVersionNoteId = oldVersionNote.Id;
+        createdNote.RootNoteId = oldVersionNote.RootNoteId;
         createdNote.ParentNoteId = oldVersionNote.ParentNoteId;
         
         oldVersionNote.ParentNoteId = null;
         oldVersionNote.RootNoteId = null;
+        oldVersionNote.NewVersionNoteId = createdNote.Id;
 
         await _database.SaveChangesAsync(cancellationToken);
     }

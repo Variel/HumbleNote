@@ -82,7 +82,6 @@ namespace HumbleNote.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NewVersionNoteId")
-                        .IsRequired()
                         .HasMaxLength(26)
                         .HasColumnType("TEXT");
 
@@ -108,8 +107,10 @@ namespace HumbleNote.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OldVersionNoteId")
+                    b.HasIndex("NewVersionNoteId")
                         .IsUnique();
+
+                    b.HasIndex("OldVersionNoteId");
 
                     b.HasIndex("ParentNoteId");
 
@@ -163,7 +164,7 @@ namespace HumbleNote.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "01GJW6GWN7C203G5XFZTWK257Z",
+                            Id = "01GJWW8R1CMPB4E1N1M6CN5QWV",
                             Name = "예차니",
                             UserName = "yechanism"
                         });
@@ -182,10 +183,9 @@ namespace HumbleNote.Migrations
 
             modelBuilder.Entity("HumbleNote.Persistence.Models.Note", b =>
                 {
-                    b.HasOne("HumbleNote.Persistence.Models.Note", "OldVersionNote")
-                        .WithOne("NewVersionNote")
-                        .HasForeignKey("HumbleNote.Persistence.Models.Note", "OldVersionNoteId")
-                        .HasPrincipalKey("HumbleNote.Persistence.Models.Note", "NewVersionNoteId");
+                    b.HasOne("HumbleNote.Persistence.Models.Note", "NewVersionNote")
+                        .WithOne("OldVersionNote")
+                        .HasForeignKey("HumbleNote.Persistence.Models.Note", "NewVersionNoteId");
 
                     b.HasOne("HumbleNote.Persistence.Models.Note", "ParentNote")
                         .WithMany("ChildrenNotes")
@@ -203,7 +203,7 @@ namespace HumbleNote.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OldVersionNote");
+                    b.Navigation("NewVersionNote");
 
                     b.Navigation("ParentNote");
 
@@ -235,11 +235,11 @@ namespace HumbleNote.Migrations
                 {
                     b.Navigation("ChildrenNotes");
 
-                    b.Navigation("NewVersionNote");
-
                     b.Navigation("NoteMentionBackLinks");
 
                     b.Navigation("NoteMentions");
+
+                    b.Navigation("OldVersionNote");
                 });
 #pragma warning restore 612, 618
         }
