@@ -1,0 +1,11 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "data",
+      "database": "${workspaceFolder:HumbleNote}/data.sqlite"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
+}

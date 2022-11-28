@@ -1,8 +1,8 @@
 using System.Reflection;
-using HumbleNote.Domain;
 using HumbleNote.Services;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using HumbleNote.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
-builder.Services.AddDbContext<DatabaseContext>(options => 
+builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseSqlite("Data Source=data.sqlite");
+  options.UseSqlite("Data Source=data.sqlite");
 });
 
 builder.Services.AddScoped<INoteService, NoteService>();
@@ -27,8 +27,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
